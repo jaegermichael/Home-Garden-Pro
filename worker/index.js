@@ -13,6 +13,9 @@ Phone and WhatsApp: +263 77 230 2335.
 The public WhatsApp catalogue is https://wa.me/c/30404207759615.
 Prices, finishes and availability can change. If the supplied catalogue does not show a price, tell the visitor to ask for the current price; never invent one.`;
 
+let cachedCatalogue;
+let catalogueCachedAt = 0;
+
 function corsHeaders(origin, allowedOrigin) {
   const allowed = String(allowedOrigin || "*").split(",").map((value) => value.trim()).filter(Boolean);
   const permitted = allowed.includes("*") || !origin || allowed.includes(origin);
@@ -34,6 +37,7 @@ function json(data, status, headers) {
 }
 
 async function catalogueContext(url) {
+  if (cachedCatalogue && Date.now() - catalogueCachedAt < 300_000) return cachedCatalogue;
   if (!url) return { products: FALLBACK_PRODUCTS, text: FALLBACK_PRODUCTS.map((item) => `${item.name} — ${item.summary} Price is not publicly listed.`).join("\n") };
   try {
     const response = await fetch(url, { headers: { Accept: "application/json" } });
@@ -52,7 +56,9 @@ async function catalogueContext(url) {
       const price = item.prices.length ? ` Prices shown: ${item.prices.join("–")}.` : " Price is not publicly listed.";
       return `${item.name} — ${item.category}; ${item.summary}${price}`;
     }).join("\n");
-    return products.length ? { products, text } : { products: FALLBACK_PRODUCTS, text: FALLBACK_PRODUCTS.map((item) => `${item.name} — ${item.summary}`).join("\n") };
+    cachedCatalogue = products.length ? { products, text } : { products: FALLBACK_PRODUCTS, text: FALLBACK_PRODUCTS.map((item) => `${item.name} — ${item.summary}`).join("\n") };
+    catalogueCachedAt = Date.now();
+    return cachedCatalogue;
   } catch {
     return { products: FALLBACK_PRODUCTS, text: FALLBACK_PRODUCTS.map((item) => `${item.name} — ${item.summary} Price is not publicly listed.`).join("\n") };
   }

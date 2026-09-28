@@ -519,7 +519,12 @@ function initGardenChat() {
   const addMessage = (role, text, pending = false) => {
     const message = document.createElement("div");
     message.className = `chat-message ${role}${pending ? " is-pending" : ""}`;
-    message.textContent = text;
+    if (pending) {
+      message.setAttribute("aria-label", text);
+      message.innerHTML = '<span class="typing-dots" aria-hidden="true"><i></i><i></i><i></i></span>';
+    } else {
+      message.textContent = text;
+    }
     messages.append(message);
     messages.scrollTop = messages.scrollHeight;
     return message;

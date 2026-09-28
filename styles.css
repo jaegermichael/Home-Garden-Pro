@@ -339,6 +339,11 @@ em { color: var(--green-soft); font-style: normal; }
 .chat-message { max-width: 91%; padding: 3px 0 3px 13px; border-left: 2px solid #a5aa77; color: #1b332b; background: transparent; font-family: Georgia, serif; font-size: .9rem; line-height: 1.58; white-space: pre-wrap; }
 .chat-message.user { align-self: flex-end; border-radius: 16px 16px 4px 16px; color: #fff; background: #466a58; }
 .chat-message.is-pending { color: #64736c; font-style: italic; }
+.typing-dots { min-height: 20px; display: inline-flex; align-items: center; gap: 5px; }
+.typing-dots i { width: 6px; height: 6px; border-radius: 50%; background: #6f7d75; animation: typing-dot 1s ease-in-out infinite; }
+.typing-dots i:nth-child(2) { animation-delay: .14s; }
+.typing-dots i:nth-child(3) { animation-delay: .28s; }
+@keyframes typing-dot { 0%, 60%, 100% { opacity: .32; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-4px); } }
 .chat-message.user { max-width: 86%; padding: 11px 14px; border-left: 0; font-family: Arial, sans-serif; font-size: .82rem; }
 .chat-products { display: grid; gap: 8px; }
 .chat-product { min-height: 78px; display: grid; grid-template-columns: 74px 1fr; overflow: hidden; border: 1px solid rgba(13,43,34,.13); border-radius: 12px; color: var(--green-dark); background: #fff; transition: transform .25s var(--ease), border-color .25s var(--ease); }
