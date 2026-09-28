@@ -85,12 +85,19 @@ export async function handleRequest(request, env) {
   const systemInstruction = `${BUSINESS_CONTEXT}\n\nCURRENT CATALOGUE:\n${catalogue.text}\n\nWrite like a knowledgeable person in the Home & Garden Pro showroom, not a generic assistant. Answer only questions about the business, its products, choosing garden pieces, care, visits and enquiries. Use the catalogue as the source of truth. Use natural, concise sentences and usually stay under 55 words. Begin with the useful answer—never with filler such as “Certainly”, “Great question”, or “I'd be happy to help”. Return plain text without Markdown. When recommending a catalogue item, use its exact product name so the site can show its image. Do not claim live stock, exact delivery timing or unlisted prices. If a request is unrelated, briefly say you can only help with Home & Garden Pro.`;
   const contents = [...cleanHistory(body.history), { role: "user", parts: [{ text: message }] }];
   const model = env.GEMINI_MODEL || "gemini-3.8-flash";
-  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
+  const geminiRequest = {
     method: "POST",
     headers: { "Content-Type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
     body: JSON.stringify({ systemInstruction: { parts: [{ text: systemInstruction }] }, contents, generationConfig: { temperature: 0.25, maxOutputTokens: 1024 } }),
-  });
-  const result = await response.json();
+  };
+  let response;
+  let result;
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, geminiRequest);
+    result = await response.json();
+    if (response.ok || (response.status !== 429 && response.status < 500)) break;
+    if (attempt === 0) await new Promise((resolve) => setTimeout(resolve, 700));
+  }
   if (!response.ok) {
     console.error("Gemini error", response.status, result?.error?.message || "Unknown error");
     return json({ error: "The garden assistant is unavailable right now." }, 502, headers);
