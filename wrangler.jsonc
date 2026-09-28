@@ -1,0 +1,12 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "home-garden-pro-chat",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-09-28",
+  "vars": {
+    "GEMINI_MODEL": "gemini-2.5-flash",
+    "CATALOG_URL": "https://home-garden-pro.vercel.app/data/catalog.json",
+    "SITE_ORIGIN": "https://home-garden-pro.vercel.app,http://127.0.0.1:4173,http://localhost:4173"
+  },
+  "secrets": { "required": ["GEMINI_API_KEY"] }
+}

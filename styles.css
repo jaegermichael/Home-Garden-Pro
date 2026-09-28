@@ -323,6 +323,45 @@ em { color: var(--green-soft); font-style: normal; }
 .footer-columns a, .footer-columns p { margin: 0 0 7px; color: rgba(255,255,255,.64); font-size: .76rem; }
 .footer-columns a:hover { color: #fff; }
 .footer-base { padding-top: 16px; display: flex; justify-content: space-between; gap: 30px; color: rgba(255,255,255,.62); font-size: .64rem; border-top: 1px solid rgba(255,255,255,.17); }
+
+/* Garden assistant */
+.garden-chat { position: fixed; z-index: 240; right: 22px; bottom: 22px; font-family: Arial, sans-serif; }
+.garden-chat-trigger { min-height: 48px; padding: 0 18px; display: flex; align-items: center; gap: 10px; border: 1px solid rgba(255,255,255,.22); border-radius: 99px; color: #fff; background: var(--green-dark); box-shadow: 0 14px 36px rgba(13,43,34,.2); font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+.garden-chat-trigger span:first-child { color: #d7d8a5; font-size: 1rem; transition: transform .45s var(--ease); }
+.garden-chat.is-open .garden-chat-trigger { opacity: 0; pointer-events: none; transform: translateY(8px); }
+.garden-chat-panel { position: absolute; right: 0; bottom: 0; width: min(390px, calc(100vw - 32px)); height: min(590px, calc(100vh - 32px)); display: grid; grid-template-rows: auto 1fr auto; overflow: hidden; border: 1px solid rgba(13,43,34,.18); border-radius: 22px; color: var(--green-dark); background: #f7f5ed; box-shadow: 0 24px 70px rgba(13,43,34,.25); transform-origin: right bottom; animation: chat-in .32s var(--ease) both; }
+.garden-chat-panel[hidden] { display: none; }
+.garden-chat-panel > header { padding: 22px 22px 19px; display: flex; justify-content: space-between; gap: 20px; color: #fff; background: var(--green-dark); }
+.garden-chat-panel header p { margin: 0 0 6px; color: #d7d8a5; font-size: .62rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; }
+.garden-chat-panel header h2 { margin: 0; color: #fff; font-family: Georgia, serif; font-size: 1.35rem; font-weight: 400; }
+.garden-chat-panel header button { width: 34px; height: 34px; border: 1px solid rgba(255,255,255,.24); border-radius: 50%; color: #fff; background: transparent; font-size: 1.35rem; cursor: pointer; }
+.garden-chat-messages { padding: 20px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; overscroll-behavior: contain; }
+.chat-message { max-width: 91%; padding: 3px 0 3px 13px; border-left: 2px solid #a5aa77; color: #1b332b; background: transparent; font-family: Georgia, serif; font-size: .9rem; line-height: 1.58; white-space: pre-wrap; }
+.chat-message.user { align-self: flex-end; border-radius: 16px 16px 4px 16px; color: #fff; background: #466a58; }
+.chat-message.is-pending { color: #64736c; font-style: italic; }
+.chat-message.user { max-width: 86%; padding: 11px 14px; border-left: 0; font-family: Arial, sans-serif; font-size: .82rem; }
+.chat-products { display: grid; gap: 8px; }
+.chat-product { min-height: 78px; display: grid; grid-template-columns: 74px 1fr; overflow: hidden; border: 1px solid rgba(13,43,34,.13); border-radius: 12px; color: var(--green-dark); background: #fff; transition: transform .25s var(--ease), border-color .25s var(--ease); }
+.chat-product:hover { transform: translateY(-2px); border-color: rgba(13,43,34,.35); }
+.chat-product img { width: 74px; height: 100%; min-height: 78px; object-fit: cover; background: #ece9de; }
+.chat-product > span { padding: 10px 12px; display: grid; align-content: center; justify-items: start; }
+.chat-product small { margin-bottom: 3px; color: #748078; font-size: .54rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.chat-product strong { font-family: Georgia, serif; font-size: .9rem; font-weight: 400; }
+.chat-product b { margin-top: 6px; font-size: .58rem; text-transform: uppercase; letter-spacing: .07em; }
+.chat-whatsapp { min-height: 62px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 14px; border-radius: 12px; color: #fff; background: #284d3e; transition: background .25s var(--ease), transform .25s var(--ease); }
+.chat-whatsapp:hover { color: #fff; background: #18392e; transform: translateY(-2px); }
+.chat-whatsapp span { display: grid; gap: 3px; }
+.chat-whatsapp small { color: rgba(255,255,255,.62); font-size: .56rem; letter-spacing: .06em; text-transform: uppercase; }
+.chat-whatsapp strong { font-family: Georgia, serif; font-size: .9rem; font-weight: 400; }
+.chat-whatsapp b { width: 30px; height: 30px; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.24); border-radius: 50%; font-size: .8rem; }
+.garden-chat-panel form { padding: 14px; border-top: 1px solid rgba(13,43,34,.12); background: #fff; }
+.garden-chat-panel form label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.garden-chat-panel form > div { padding: 7px 7px 7px 14px; display: flex; align-items: flex-end; gap: 8px; border: 1px solid rgba(13,43,34,.22); border-radius: 15px; }
+.garden-chat-panel textarea { flex: 1; min-height: 36px; max-height: 112px; padding: 8px 0 5px; resize: none; border: 0; outline: 0; color: var(--green-dark); background: transparent; font: inherit; font-size: .84rem; line-height: 1.4; }
+.garden-chat-panel form button { flex: 0 0 auto; width: 38px; height: 38px; border: 0; border-radius: 50%; color: #fff; background: var(--green-dark); font-size: 1.15rem; cursor: pointer; }
+.garden-chat-panel form button:disabled { opacity: .45; cursor: wait; }
+.garden-chat button:focus-visible, .garden-chat textarea:focus-visible { outline: 3px solid #b6a568; outline-offset: 3px; }
+@keyframes chat-in { from { opacity: 0; transform: translateY(14px) scale(.96); } }
 .admin-link { margin-left: 14px; color: rgba(255,255,255,.38); }
 .admin-link:hover { color: #fff; }
 
@@ -412,6 +451,8 @@ em { color: var(--green-soft); font-style: normal; }
 }
 
 @media (max-width: 560px) {
+  .garden-chat { right: 12px; bottom: 12px; }
+  .garden-chat-panel { width: calc(100vw - 24px); height: min(620px, calc(100dvh - 24px)); }
   h1 { font-size: clamp(2.25rem, 11vw, 3rem); }
   h2 { font-size: clamp(1.85rem, 8.4vw, 2.35rem); }
   .mobile-menu > div:last-child { display: grid; }

@@ -25,3 +25,16 @@ Vercel Blob provides durable catalogue and image storage. The project expects `B
 npm install
 vercel dev
 ```
+
+## Gemini garden assistant on Cloudflare
+
+The site includes an accessible **Ask the garden** widget. Its `/api/chat` endpoint is a Cloudflare Worker, so the Gemini API key never reaches the browser. The Worker reads the current public catalogue before each answer and refuses unrelated questions.
+
+1. Create a Gemini API key in Google AI Studio.
+2. Copy `.dev.vars.example` to `.dev.vars` and add the key for local Worker testing.
+3. Adjust `SITE_ORIGIN` and `CATALOG_URL` in `wrangler.jsonc` for the production domain.
+4. Run `npx wrangler secret put GEMINI_API_KEY`.
+5. Run `npm run chat:deploy`.
+6. In Cloudflare, attach the Worker to the site's `/api/chat` route. If it runs on a separate `workers.dev` domain instead, set `window.HGP_CHAT_ENDPOINT` to that URL before `app.js` loads.
+
+For local Worker development, use `npm run chat:dev`. The Gemini model is configurable through `GEMINI_MODEL` in `wrangler.jsonc`.

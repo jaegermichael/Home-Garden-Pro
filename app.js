@@ -488,6 +488,116 @@ function hydrateDynamicProduct() {
   document.title = `${item.name} | Home & Garden Pro`;
 }
 
+function initGardenChat() {
+  if (document.querySelector("[data-garden-chat]")) return;
+  const endpoint = window.HGP_CHAT_ENDPOINT || "https://home-garden-pro-chat.jaegermichael004.workers.dev";
+  const shell = document.createElement("aside");
+  shell.className = "garden-chat";
+  shell.dataset.gardenChat = "";
+  shell.innerHTML = `<button class="garden-chat-trigger" type="button" aria-expanded="false" aria-controls="garden-chat-panel"><span aria-hidden="true">✦</span><span>Ask the garden</span></button>
+    <section class="garden-chat-panel" id="garden-chat-panel" aria-label="Home & Garden Pro assistant" hidden>
+      <header><div><p>Garden assistant</p><h2>What would you like to know?</h2></div><button type="button" data-chat-close aria-label="Close chat">×</button></header>
+      <div class="garden-chat-messages" data-chat-messages role="log" aria-live="polite"><div class="chat-message assistant">Ask about our pieces, finishes, visiting Boxpark or choosing a form for your space.</div></div>
+      <form data-chat-form><label for="garden-chat-input">Your question</label><div><textarea id="garden-chat-input" maxlength="600" rows="1" placeholder="Which planter suits an entrance?" required></textarea><button type="submit" aria-label="Send question">↑</button></div></form>
+    </section>`;
+  document.body.append(shell);
+  const trigger = shell.querySelector(".garden-chat-trigger");
+  const panel = shell.querySelector(".garden-chat-panel");
+  const close = shell.querySelector("[data-chat-close]");
+  const form = shell.querySelector("[data-chat-form]");
+  const input = shell.querySelector("textarea");
+  const messages = shell.querySelector("[data-chat-messages]");
+  const submit = form.querySelector("button");
+  const history = [];
+
+  const setOpen = (open) => {
+    panel.hidden = !open;
+    trigger.setAttribute("aria-expanded", String(open));
+    shell.classList.toggle("is-open", open);
+    if (open) input.focus(); else trigger.focus();
+  };
+  const addMessage = (role, text, pending = false) => {
+    const message = document.createElement("div");
+    message.className = `chat-message ${role}${pending ? " is-pending" : ""}`;
+    message.textContent = text;
+    messages.append(message);
+    messages.scrollTop = messages.scrollHeight;
+    return message;
+  };
+  const addProductLinks = (products = []) => {
+    if (!products.length) return;
+    const rail = document.createElement("div");
+    rail.className = "chat-products";
+    rail.setAttribute("aria-label", "Pieces mentioned");
+    products.forEach((product) => {
+      const link = document.createElement("a");
+      link.className = "chat-product";
+      link.href = `/products/${encodeURIComponent(product.slug)}/`;
+      const image = document.createElement("img");
+      image.src = product.image;
+      image.alt = "";
+      image.loading = "lazy";
+      const copy = document.createElement("span");
+      const label = document.createElement("small");
+      label.textContent = product.category || "View piece";
+      const name = document.createElement("strong");
+      name.textContent = product.name;
+      const arrow = document.createElement("b");
+      arrow.textContent = "View →";
+      copy.append(label, name, arrow);
+      link.append(image, copy);
+      rail.append(link);
+    });
+    messages.append(rail);
+    messages.scrollTop = messages.scrollHeight;
+  };
+  const addWhatsAppLink = (question) => {
+    const message = `Hello Home & Garden Pro, I was looking at your website and asked: “${question}” I'd like to continue the conversation.`;
+    const link = document.createElement("a");
+    link.className = "chat-whatsapp";
+    link.href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.innerHTML = `<span><small>Prefer to speak with us?</small><strong>Continue on WhatsApp</strong></span><b aria-hidden="true">↗</b>`;
+    messages.append(link);
+    messages.scrollTop = messages.scrollHeight;
+  };
+  trigger.addEventListener("click", () => setOpen(panel.hidden));
+  close.addEventListener("click", () => setOpen(false));
+  window.addEventListener("keydown", (event) => { if (event.key === "Escape" && !panel.hidden) setOpen(false); });
+  input.addEventListener("input", () => { input.style.height = "auto"; input.style.height = `${Math.min(input.scrollHeight, 112)}px`; });
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); form.requestSubmit(); }
+  });
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const text = input.value.trim();
+    if (!text || submit.disabled) return;
+    addMessage("user", text);
+    input.value = "";
+    input.style.height = "auto";
+    submit.disabled = true;
+    const pending = addMessage("assistant", "Thinking among the forms…", true);
+    try {
+      const response = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: text, history }) });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || "Chat request failed");
+      pending.remove();
+      addMessage("assistant", data.reply);
+      addProductLinks(data.products);
+      addWhatsAppLink(text);
+      history.push({ role: "user", text }, { role: "assistant", text: data.reply });
+      if (history.length > 8) history.splice(0, history.length - 8);
+    } catch (error) {
+      pending.textContent = ["Failed to fetch", "Chat request failed"].includes(error.message) ? "The garden assistant is offline. Please try again shortly." : error.message;
+      pending.classList.remove("is-pending");
+    } finally {
+      submit.disabled = false;
+      input.focus();
+    }
+  });
+}
+
 initProgressAndNavigation();
 initLogoShortcut();
 initMenu();
@@ -501,3 +611,4 @@ initLightbox();
 initEnquiryModal();
 initSizeSelection();
 hydrateCatalogues();
+initGardenChat();

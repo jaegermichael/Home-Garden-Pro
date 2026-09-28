@@ -5,7 +5,12 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build-pages.mjs",
-    "test": "node --test tests/*.test.js"
+    "test": "node --test tests/*.test.js",
+    "chat:dev": "wrangler dev",
+    "chat:deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.41.0"
   },
   "dependencies": {
     "@vercel/blob": "^2.8.0"
