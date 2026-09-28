@@ -4,7 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node scripts/build-pages.mjs",
+    "predev": "node scripts/prepare-react-public.mjs",
+    "dev": "vite",
+    "prebuild": "node scripts/prepare-react-public.mjs",
+    "build": "vite build",
+    "preview": "vite preview",
     "test": "node --test tests/*.test.js",
     "chat:dev": "wrangler dev",
     "chat:deploy": "wrangler deploy"
@@ -13,6 +17,13 @@
     "wrangler": "^4.41.0"
   },
   "dependencies": {
-    "@vercel/blob": "^2.8.0"
+    "@vercel/blob": "^2.8.0",
+    "@vitejs/plugin-react": "^5.0.4",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-router-dom": "^6.30.1",
+    "tailwindcss": "^4.1.13",
+    "@tailwindcss/vite": "^4.1.13",
+    "vite": "^7.1.7"
   }
 }

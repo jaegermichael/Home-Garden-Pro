@@ -2,6 +2,17 @@
 
 Editorial catalogue website for Home & Garden Pro, a Zimbabwean concrete garden pots, sculptures and water features business in Helensvale, Harare.
 
+## React + Tailwind frontend
+
+The public site uses React 19, React Router, Vite and Tailwind CSS 4. The visual language, catalogue JSON, Vercel APIs, private admin and Cloudflare Gemini assistant remain shared with the original implementation.
+
+```powershell
+npm install
+npm run dev
+```
+
+`npm run build` prepares public assets and creates the production application in `dist/`.
+
 ## Public site
 
 Serve the project with Vercel or a local HTTP server. The source catalogue in `data/catalog.json` remains visible when the live catalogue API is unavailable.

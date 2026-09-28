@@ -6,7 +6,7 @@
   "vars": {
     "GEMINI_MODEL": "gemini-2.5-flash",
     "CATALOG_URL": "https://home-garden-pro.vercel.app/data/catalog.json",
-    "SITE_ORIGIN": "https://home-garden-pro.vercel.app,http://127.0.0.1:4173,http://localhost:4173"
+    "SITE_ORIGIN": "https://home-garden-pro.vercel.app,http://127.0.0.1:4173,http://localhost:4173,http://127.0.0.1:4174,http://localhost:4174"
   },
   "secrets": { "required": ["GEMINI_API_KEY"] }
 }
