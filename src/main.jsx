@@ -1,88 +1,58 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Link, NavLink, Route, Routes, useLocation, useParams } from "react-router-dom";
-import catalogData from "../data/catalog.json";
 import "./styles.css";
 
-const PHONE = "263772302335";
-const CHAT_ENDPOINT = "https://home-garden-pro-chat.jaegermichael004.workers.dev";
-const CATEGORIES = {
-  planters: { name: "Planters & vessels", short: "Planters", note: "Tall, rounded and architectural vessels for entrances, patios and planted rooms.", image: "/assets/catalog/planters-vessels.webp" },
-  sculptural: { name: "Sculptural forms", short: "Sculptural", note: "Open silhouettes and grounded objects that hold a garden view.", image: "/assets/catalog/sculptural-leaf.webp" },
-  "water-features": { name: "Water features", short: "Water", note: "Low bowls and pedestal forms designed to bring a quiet centre to outdoor spaces.", image: "/assets/catalog/water-bowl.webp" },
-  troughs: { name: "Troughs", short: "Troughs", note: "Linear planters that define edges, paths and layered planting schemes.", image: "/assets/catalog/troughs-stacked.webp" },
-};
+const pageModules = import.meta.glob("../legacy-pages/**/*.html", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+});
 
-function useCatalogue() {
-  const [catalogue, setCatalogue] = useState(catalogData);
+function moduleForPath(pathname) {
+  const clean = pathname.replace(/\/+$/, "") || "/";
+  const candidates = clean === "/"
+    ? ["../legacy-pages/home.html"]
+    : [
+        `../legacy-pages${clean}/index.html`,
+        `../legacy-pages${clean}.html`,
+      ];
+  return candidates.map((key) => pageModules[key]).find(Boolean) || pageModules["../legacy-pages/404.html"];
+}
+
+function parsePage(source) {
+  const body = source.match(/<body(?:\s+class="([^"]*)")?[^>]*>([\s\S]*?)<\/body>/i);
+  const title = source.match(/<title>([\s\S]*?)<\/title>/i)?.[1]?.trim();
+  const description = source.match(/<meta\s+name="description"\s+content="([^"]*)"/i)?.[1];
+  return {
+    bodyClass: body?.[1] || "",
+    html: (body?.[2] || source).replace(/<script[^>]*src="\/app\.js"[^>]*><\/script>/gi, ""),
+    title,
+    description,
+  };
+}
+
+function LegacyPage() {
+  const page = useMemo(() => parsePage(moduleForPath(window.location.pathname)), []);
+
   useEffect(() => {
-    fetch("/api/catalog", { headers: { Accept: "application/json" }, cache: "no-store" }).then((response) => response.ok ? response.json() : null).then((data) => { if (data?.items) setCatalogue(data); }).catch(() => {});
-  }, []);
-  return catalogue;
+    document.body.className = page.bodyClass;
+    if (page.title) document.title = page.title;
+    let description = document.querySelector('meta[name="description"]');
+    if (!description) {
+      description = document.createElement("meta");
+      description.name = "description";
+      document.head.append(description);
+    }
+    if (page.description) description.content = page.description;
+
+    const script = document.createElement("script");
+    script.type = "module";
+    script.src = "/app.js";
+    document.body.append(script);
+    return () => script.remove();
+  }, [page]);
+
+  return <div dangerouslySetInnerHTML={{ __html: page.html }} />;
 }
 
-function Header() {
-  const [open, setOpen] = useState(false);
-  const location = useLocation();
-  useEffect(() => { setOpen(false); window.scrollTo(0, 0); }, [location.pathname]);
-  return <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4 lg:px-8">
-    <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between rounded-full border border-forest/10 bg-ivory/95 px-5 shadow-[0_10px_35px_rgba(13,43,34,.1)] backdrop-blur-xl lg:px-7">
-      <Link to="/" className="font-display text-lg tracking-[-.03em] text-forest">Home &amp; Garden Pro</Link>
-      <nav className="hidden items-center gap-7 text-[11px] font-semibold uppercase tracking-[.12em] md:flex">
-        <NavLink to="/collection/">Collection</NavLink><NavLink to="/gallery/">In the yard</NavLink><NavLink to="/about/">Our story</NavLink><NavLink to="/visit/">Visit</NavLink>
-      </nav>
-      <a href={`https://wa.me/${PHONE}`} target="_blank" rel="noreferrer" className="hidden rounded-full bg-forest px-5 py-3 text-[10px] font-semibold uppercase tracking-[.12em] text-white md:block">Enquire ↗</a>
-      <button className="text-xs font-semibold uppercase tracking-wider md:hidden" onClick={() => setOpen(!open)} aria-expanded={open}>Menu</button>
-    </div>
-    {open && <nav className="mx-auto mt-2 grid max-w-[1400px] gap-1 rounded-3xl bg-forest p-5 text-lg text-white md:hidden"><Link to="/collection/">Collection</Link><Link to="/gallery/">In the yard</Link><Link to="/about/">Our story</Link><Link to="/visit/">Visit</Link></nav>}
-  </header>;
-}
-
-function Footer({ catalogueUrl }) {
-  return <footer className="bg-ink px-5 pb-6 pt-20 text-white lg:px-10">
-    <div className="mx-auto max-w-[1400px]"><div className="grid gap-10 border-b border-white/15 pb-14 md:grid-cols-2 md:items-end"><Link to="/" className="font-display text-5xl tracking-[-.05em] md:text-7xl">Home &amp;<br/>Garden Pro</Link><p className="text-xs uppercase tracking-[.16em] text-white/60 md:justify-self-end">Made in Zimbabwe.<br/>Made to belong.</p></div>
-    <div className="grid gap-10 py-12 text-sm text-white/65 sm:grid-cols-3 md:pl-[38%]"><div><p className="mb-4 text-[10px] uppercase tracking-widest text-white">Explore</p><Link className="block" to="/collection/">Collection</Link><Link className="block" to="/gallery/">In the yard</Link></div><div><p className="mb-4 text-[10px] uppercase tracking-widest text-white">Visit</p><p>Boxpark, 18 Crowhill Road</p><p>Helensvale, Harare</p></div><div><p className="mb-4 text-[10px] uppercase tracking-widest text-white">Contact</p><a className="block" href={`tel:+${PHONE}`}>+263 77 230 2335</a><a href={catalogueUrl} target="_blank" rel="noreferrer">WhatsApp catalogue</a></div></div>
-    <div className="flex flex-col gap-2 border-t border-white/15 pt-5 text-[10px] text-white/45 sm:flex-row sm:justify-between"><span>© 2026 Home &amp; Garden Pro · <a href="/admin/">Admin</a></span><span>Made for considered spaces.</span></div></div>
-  </footer>;
-}
-
-function ProductCard({ item }) {
-  return <article className="group"><Link to={`/products/${item.slug}/`} className="block aspect-[4/5] overflow-hidden bg-stone"><img src={item.image} alt={item.alt || item.name} className="h-full w-full object-contain transition duration-700 group-hover:scale-[1.035]" loading="lazy"/></Link><div className="grid grid-cols-[1fr_auto] gap-4 border-t border-forest/15 py-4"><div><p className="eyebrow">{item.categoryLabel}</p><h3 className="font-display text-2xl">{item.name}</h3></div><Link to={`/products/${item.slug}/`} className="self-end text-xs font-semibold uppercase tracking-wider">View ↗</Link></div></article>;
-}
-
-function SectionIntro({ label, title, copy }) { return <div className="mb-12 grid gap-7 border-t border-forest/20 pt-5 md:grid-cols-[1fr_360px]"><div><p className="eyebrow mb-5">{label}</p><h2 className="max-w-3xl font-display text-5xl leading-[.98] tracking-[-.04em] md:text-7xl">{title}</h2></div>{copy && <p className="self-end text-sm leading-7 text-forest/65">{copy}</p>}</div>; }
-
-function Home({ items }) {
-  return <>
-    <section className="relative min-h-[760px] overflow-hidden bg-forest text-white"><img className="absolute inset-0 h-full w-full object-cover opacity-65" src="/assets/catalog/hero-storefront.webp" alt="Home & Garden Pro outdoor display"/><div className="absolute inset-0 bg-gradient-to-t from-forest via-forest/20 to-transparent"/><div className="relative mx-auto flex min-h-[760px] max-w-[1400px] items-end px-5 pb-20 pt-32 lg:px-10"><div className="max-w-5xl"><p className="mb-6 text-xs uppercase tracking-[.2em] text-white/70">Concrete forms · Harare, Zimbabwe</p><h1 className="font-display text-[clamp(4rem,10vw,9rem)] leading-[.78] tracking-[-.065em]">Objects for<br/><i className="font-normal">open air.</i></h1><p className="mt-8 max-w-md text-sm leading-7 text-white/75">Planters, water features and sculptural pieces made to settle naturally into considered spaces.</p></div></div></section>
-    <section className="section"><SectionIntro label="01 / The collection" title="Choose by form." copy="Each piece begins with proportion: a silhouette that can frame an entrance, anchor a courtyard or hold a long garden view."/><div className="grid gap-px overflow-hidden bg-forest/10 sm:grid-cols-2 lg:grid-cols-4">{Object.entries(CATEGORIES).map(([key, value]) => <Link key={key} to={`/collection/${key}/`} className="group bg-ivory p-3"><div className="aspect-[4/5] overflow-hidden bg-stone"><img src={value.image} alt="" className="h-full w-full object-cover transition duration-700 group-hover:scale-105"/></div><div className="flex items-center justify-between py-4"><span className="font-display text-xl">{value.short}</span><span>↗</span></div></Link>)}</div></section>
-    <section className="bg-forest py-24 text-white"><div className="section !py-0"><SectionIntro label="02 / Current edit" title="Made with presence." copy="Strong profiles, quiet surfaces and finishes that grow more at home outdoors over time."/><div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">{items.filter(i => i.featured).slice(0,4).map(item => <ProductCard key={item.id} item={item}/>)}</div></div></section>
-    <section className="section grid gap-10 lg:grid-cols-[1.15fr_.85fr] lg:items-center"><img src="/assets/catalog/visit-path.webp" alt="Garden display at Boxpark" className="min-h-[480px] w-full object-cover"/><div className="lg:p-12"><p className="eyebrow mb-6">Come and see</p><h2 className="font-display text-5xl leading-none md:text-7xl">Best understood in daylight.</h2><p className="my-7 max-w-md text-sm leading-7 text-forest/65">Walk among the pieces, compare scale and see how each finish meets the garden.</p><Link className="button" to="/visit/">Plan your visit ↗</Link></div></section>
-  </>;
-}
-
-function Collection({ items }) {
-  const { category } = useParams(); const config = CATEGORIES[category]; const shown = config ? items.filter(item => item.category === category) : items;
-  return <><section className="section grid min-h-[680px] gap-12 pt-36 lg:grid-cols-[.8fr_1.2fr] lg:items-center"><div><p className="eyebrow mb-7">Architectural garden forms</p><h1 className="font-display text-6xl leading-[.92] tracking-[-.05em] md:text-8xl">{config?.name || "Pieces for considered spaces."}</h1><p className="mt-7 max-w-lg text-sm leading-7 text-forest/65">{config?.note || "Discover planters, sculptural pieces, water features and troughs made in Zimbabwe."}</p></div><img src={config?.image || "/assets/catalog/hero-planter-field.webp"} alt="" className="h-[480px] w-full object-cover lg:h-[620px]"/></section><section className="section"><SectionIntro label="02 / Current edit" title={config?.short || "Selected pieces"} copy="Ask about current finishes, availability and made-to-order options."/><div className="grid gap-x-7 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">{shown.map(item => <ProductCard key={item.id} item={item}/>)}</div></section></>;
-}
-
-function Product({ items, catalogueUrl }) {
-  const { slug } = useParams(); const item = items.find(product => product.slug === slug); if (!item) return <NotFound/>;
-  const message = encodeURIComponent(`Hello Home & Garden Pro, I'm interested in ${item.name}. Could you confirm current finishes, pricing and availability?`);
-  return <section className="section grid min-h-screen gap-12 pt-32 lg:grid-cols-[1.2fr_.8fr]"><div><div className="aspect-[4/5] bg-stone"><img src={item.images?.[0] || item.image} alt={item.alt} className="h-full w-full object-contain"/></div><div className="mt-4 grid grid-cols-2 gap-4">{item.images?.slice(1).map(src => <img key={src} src={src} alt="" className="aspect-square w-full object-cover"/>)}</div></div><aside className="lg:sticky lg:top-28 lg:self-start"><p className="eyebrow mb-5">{item.categoryLabel}</p><h1 className="font-display text-6xl leading-none tracking-[-.05em] md:text-8xl">{item.name}</h1><p className="mt-5 text-xs uppercase tracking-widest text-forest/50">{item.family}</p><p className="my-8 max-w-md text-base leading-8 text-forest/70">{item.summary}</p><div className="border-y border-forest/15 py-6"><p className="eyebrow">Price</p><strong className="mt-2 block font-display text-2xl font-normal">Ask for current price</strong></div><div className="mt-8 flex flex-wrap gap-3"><a className="button" href={`https://wa.me/${PHONE}?text=${message}`} target="_blank" rel="noreferrer">Ask about this piece ↗</a><a className="button secondary" href={catalogueUrl} target="_blank" rel="noreferrer">WhatsApp catalogue</a></div></aside></section>;
-}
-
-function Gallery() { const images = ["hero-yard.webp","planters-round.webp","sculptural-leaf.webp","visit-path.webp","water-bowl.webp","planters-tall.webp","sculptural-loop.webp","yard-bowls.webp","sculptural-lineup.webp"]; return <><PageHero eyebrow="In the yard" title="Form, texture and scale." image="/assets/catalog/hero-yard.webp"/><section className="section columns-1 gap-4 sm:columns-2 lg:columns-3">{images.map((image,index)=><img key={image} src={`/assets/catalog/${image}`} alt="Home & Garden Pro collection" className={`mb-4 w-full break-inside-avoid object-cover ${index%3===0?'aspect-[4/5]':'aspect-square'}`}/>)}</section></>; }
-function About() { return <><PageHero eyebrow="Our story" title={<>Made in Zimbabwe.<br/>Made to belong.</>} image="/assets/catalog/visit-path.webp"/><section className="section grid gap-12 lg:grid-cols-2 lg:items-center"><div><p className="eyebrow mb-6">Strong lines. Quiet surfaces.</p><h2 className="font-display text-6xl leading-none">Objects with presence.</h2><p className="mt-8 max-w-lg text-base leading-8 text-forest/65">A tall vessel can frame an entrance. A low basin can settle a courtyard. An open sculptural form can hold a long view without competing with it.</p></div><img src="/assets/catalog/sculptural-leaf.webp" alt="Open sculptural garden form" className="h-[650px] w-full object-cover"/></section></>; }
-function Visit() { return <><PageHero eyebrow="Boxpark · Helensvale" title="See the pieces in daylight." image="/assets/catalog/visit-display.webp"/><section className="section grid gap-12 lg:grid-cols-2"><div><p className="eyebrow mb-6">Visit the display</p><h2 className="font-display text-5xl">18 Crowhill Road,<br/>Harare.</h2><p className="mt-7 max-w-md text-sm leading-7 text-forest/65">See scale, texture and finish in person at the Home & Garden Pro display at Boxpark, Helensvale.</p></div><div className="grid gap-3 self-start"><a className="button" href="https://www.google.com/maps/search/?api=1&query=Box+Park%2C+18+Crowhill+Road%2C+Harare%2C+Zimbabwe" target="_blank" rel="noreferrer">Open in Google Maps ↗</a><a className="button secondary" href={`https://wa.me/${PHONE}`} target="_blank" rel="noreferrer">Message before visiting ↗</a></div></section></>; }
-function PageHero({ eyebrow, title, image }) { return <section className="relative flex min-h-[720px] items-end overflow-hidden bg-forest px-5 pb-20 pt-32 text-white lg:px-10"><img src={image} alt="" className="absolute inset-0 h-full w-full object-cover opacity-55"/><div className="absolute inset-0 bg-gradient-to-t from-forest via-transparent to-forest/20"/><div className="relative mx-auto w-full max-w-[1400px]"><p className="mb-6 text-xs uppercase tracking-[.2em]">{eyebrow}</p><h1 className="max-w-5xl font-display text-6xl leading-[.9] tracking-[-.05em] md:text-9xl">{title}</h1></div></section>; }
-function NotFound() { return <section className="section flex min-h-screen flex-col items-center justify-center text-center"><p className="eyebrow mb-5">404</p><h1 className="font-display text-7xl">This path ends here.</h1><Link className="button mt-8" to="/">Return home</Link></section>; }
-
-function Chat() {
-  const [open,setOpen]=useState(false), [input,setInput]=useState(""), [loading,setLoading]=useState(false), [messages,setMessages]=useState([{role:"assistant",text:"Ask about a piece, choosing a form or visiting Boxpark."}]);
-  async function send(event){ event.preventDefault(); const text=input.trim(); if(!text||loading)return; setInput(""); setLoading(true); const history=messages.slice(-8); setMessages(current=>[...current,{role:"user",text}]); try { const response=await fetch(CHAT_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:text,history})}); const data=await response.json(); if(!response.ok)throw new Error(data.error); setMessages(current=>[...current,{role:"assistant",text:data.reply,products:data.products,question:text}]); } catch(error){setMessages(current=>[...current,{role:"assistant",text:error.message||"The garden assistant is offline. Please try again."}]);} finally{setLoading(false);} }
-  return <aside className="fixed bottom-4 right-4 z-[70] font-sans"><button onClick={()=>setOpen(true)} className={`rounded-full bg-forest px-5 py-4 text-[10px] font-semibold uppercase tracking-widest text-white shadow-2xl ${open?'hidden':''}`}>✦ &nbsp; Ask the garden</button>{open&&<section className="grid h-[min(620px,calc(100dvh-32px))] w-[min(390px,calc(100vw-32px))] grid-rows-[auto_1fr_auto] overflow-hidden rounded-[24px] border border-forest/15 bg-[#f7f5ed] shadow-2xl"><header className="flex items-start justify-between bg-forest p-5 text-white"><div><p className="text-[9px] uppercase tracking-widest text-sage">Garden assistant</p><h2 className="mt-1 font-display text-xl">What would you like to know?</h2></div><button onClick={()=>setOpen(false)} className="grid size-9 place-items-center rounded-full border border-white/20 text-xl">×</button></header><div className="space-y-3 overflow-y-auto p-5">{messages.map((message,index)=><div key={index}>{<p className={message.role==="user"?"ml-auto max-w-[85%] rounded-2xl rounded-br-sm bg-[#466a58] px-4 py-3 text-sm text-white":"max-w-[92%] border-l-2 border-[#a5aa77] pl-3 font-display text-[15px] leading-6"}>{message.text}</p>}{message.products?.length>0&&<div className="mt-3 space-y-2">{message.products.map(product=><Link key={product.slug} to={`/products/${product.slug}/`} onClick={()=>setOpen(false)} className="grid grid-cols-[70px_1fr] overflow-hidden rounded-xl border border-forest/10 bg-white"><img src={product.image} alt="" className="h-20 w-[70px] object-cover"/><span className="grid content-center px-3"><small className="eyebrow">{product.category}</small><strong className="font-display font-normal">{product.name}</strong><b className="mt-1 text-[9px] uppercase tracking-wider">View →</b></span></Link>)}</div>}{message.question&&<a href={`https://wa.me/${PHONE}?text=${encodeURIComponent(`Hello Home & Garden Pro, I asked on your website: “${message.question}” I'd like to continue the conversation.`)}`} target="_blank" rel="noreferrer" className="mt-3 flex items-center justify-between rounded-xl bg-forest p-3 text-white"><span><small className="block text-[8px] uppercase tracking-wider text-white/55">Prefer to speak with us?</small><strong className="font-display text-sm font-normal">Continue on WhatsApp</strong></span><b>↗</b></a>}</div>)}{loading&&<p className="border-l-2 border-[#a5aa77] pl-3 font-display text-sm italic text-forest/55">Looking through the collection…</p>}</div><form onSubmit={send} className="border-t border-forest/10 bg-white p-3"><div className="flex items-end rounded-xl border border-forest/20 p-2 pl-3"><textarea aria-label="Your question" value={input} onChange={e=>setInput(e.target.value)} rows="1" maxLength="600" placeholder="Which planter suits an entrance?" className="min-h-9 flex-1 resize-none bg-transparent py-2 text-sm outline-none"/><button disabled={loading} className="grid size-9 place-items-center rounded-full bg-forest text-white">↑</button></div></form></section>}</aside>;
-}
-
-function App(){ const catalogue=useCatalogue(); const items=useMemo(()=>catalogue.items.filter(i=>i.visible!==false&&!i.archived),[catalogue]); const url=catalogue.settings?.whatsappCatalogUrl||`https://wa.me/${PHONE}`; return <><Header/><main><Routes><Route path="/" element={<Home items={items}/>}/><Route path="/collection/" element={<Collection items={items}/>}/><Route path="/collection/:category/" element={<Collection items={items}/>}/><Route path="/products/:slug/" element={<Product items={items} catalogueUrl={url}/>}/><Route path="/gallery/" element={<Gallery/>}/><Route path="/about/" element={<About/>}/><Route path="/visit/" element={<Visit/>}/><Route path="*" element={<NotFound/>}/></Routes></main><Footer catalogueUrl={url}/><Chat/></>; }
-createRoot(document.getElementById("root")).render(<React.StrictMode><BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><App/></BrowserRouter></React.StrictMode>);
+createRoot(document.getElementById("root")).render(<LegacyPage />);
