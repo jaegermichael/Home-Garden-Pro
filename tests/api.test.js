@@ -4,11 +4,11 @@ import test from "node:test";
 import authHandler from "../api/auth.js";
 import catalogHandler from "../api/catalog.js";
 
-const TEST_EMAIL = "admin@example.test";
+const TEST_USERNAME = "homeandgardenpro";
 const TEST_PASSWORD = "local-test-password";
 const TEST_SALT = "0123456789abcdef0123456789abcdef";
 
-process.env.HGP_ADMIN_EMAIL = TEST_EMAIL;
+process.env.HGP_ADMIN_USERNAME = TEST_USERNAME;
 process.env.HGP_ADMIN_PASSWORD_SALT = TEST_SALT;
 process.env.HGP_ADMIN_PASSWORD_HASH = crypto.pbkdf2Sync(TEST_PASSWORD, TEST_SALT, 210000, 32, "sha256").toString("hex");
 process.env.HGP_ADMIN_SESSION_SECRET = "test-session-secret-with-at-least-32-characters";
@@ -26,7 +26,7 @@ function responseMock() {
 
 function loginCookie() {
   const response = responseMock();
-  authHandler({ method: "POST", headers: {}, body: { email: TEST_EMAIL, password: TEST_PASSWORD } }, response);
+  authHandler({ method: "POST", headers: {}, body: { username: TEST_USERNAME, password: TEST_PASSWORD } }, response);
   assert.equal(response.statusCode, 200);
   return response.headers["Set-Cookie"].split(";")[0];
 }
@@ -49,15 +49,15 @@ test("catalogue GET returns normalized price-hidden data without storage", async
 
 test("admin auth rejects incorrect credentials without setting a session", () => {
   const response = responseMock();
-  authHandler({ method: "POST", headers: {}, body: { email: TEST_EMAIL, password: "incorrect" } }, response);
+  authHandler({ method: "POST", headers: {}, body: { username: TEST_USERNAME, password: "incorrect" } }, response);
   assert.equal(response.statusCode, 401);
-  assert.equal(response.payload.error, "Email or password incorrect.");
+  assert.equal(response.payload.error, "Username or password incorrect.");
   assert.equal(response.headers["Set-Cookie"], undefined);
 });
 
 test("admin auth issues and validates a secure HttpOnly session cookie", () => {
   const loginResponse = responseMock();
-  authHandler({ method: "POST", headers: {}, body: { email: TEST_EMAIL, password: TEST_PASSWORD } }, loginResponse);
+  authHandler({ method: "POST", headers: {}, body: { username: TEST_USERNAME, password: TEST_PASSWORD } }, loginResponse);
   assert.equal(loginResponse.statusCode, 200);
   assert.match(loginResponse.headers["Set-Cookie"], /HttpOnly/);
   assert.match(loginResponse.headers["Set-Cookie"], /Secure/);
@@ -66,7 +66,7 @@ test("admin auth issues and validates a secure HttpOnly session cookie", () => {
   const sessionResponse = responseMock();
   authHandler({ method: "GET", headers: { cookie: loginResponse.headers["Set-Cookie"].split(";")[0] } }, sessionResponse);
   assert.equal(sessionResponse.statusCode, 200);
-  assert.equal(sessionResponse.payload.email, TEST_EMAIL);
+  assert.equal(sessionResponse.payload.username, TEST_USERNAME);
 });
 
 test("catalogue writes reject requests without an authenticated session", async () => {

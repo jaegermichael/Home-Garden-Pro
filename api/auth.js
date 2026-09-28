@@ -6,7 +6,7 @@ export default function handler(request, response) {
   if (request.method === "GET") {
     const session = sessionFromRequest(request);
     if (!session) return response.status(401).json({ error: "Access denied" });
-    return response.status(200).json({ ok: true, email: session.email });
+    return response.status(200).json({ ok: true, username: session.username });
   }
 
   if (request.method === "DELETE") {
@@ -19,13 +19,13 @@ export default function handler(request, response) {
     return response.status(405).json({ error: "Method not allowed" });
   }
 
-  const { email, password } = request.body || {};
-  if (!verifyCredentials(email, password)) {
-    return response.status(401).json({ error: "Email or password incorrect." });
+  const { username, password } = request.body || {};
+  if (!verifyCredentials(username, password)) {
+    return response.status(401).json({ error: "Username or password incorrect." });
   }
 
-  const session = createSession(email);
+  const session = createSession(username);
   if (!session) return response.status(503).json({ error: "Admin access is not configured." });
   response.setHeader("Set-Cookie", session.cookie);
-  return response.status(200).json({ ok: true, email: session.email });
+  return response.status(200).json({ ok: true, username: session.username });
 }

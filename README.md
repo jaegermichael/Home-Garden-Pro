@@ -23,7 +23,7 @@ The discreet `/admin/` workspace manages products, visibility, featured status, 
 
 Configure these server-only environment variables:
 
-- `HGP_ADMIN_EMAIL`: the verified primary Home & Garden Pro business email
+- `HGP_ADMIN_USERNAME`: the private administrator username
 - `HGP_ADMIN_PASSWORD_SALT`: a random hexadecimal salt
 - `HGP_ADMIN_PASSWORD_HASH`: a 64-character PBKDF2-SHA256 hash using 210,000 iterations
 - `HGP_ADMIN_SESSION_SECRET`: a random secret of at least 32 characters used to sign sessions

@@ -1,7 +1,7 @@
 const loginView = document.querySelector("#loginView");
 const studioView = document.querySelector("#studioView");
 const loginForm = document.querySelector("#loginForm");
-const emailInput = document.querySelector("#email");
+const usernameInput = document.querySelector("#username");
 const passwordInput = document.querySelector("#password");
 const loginMessage = document.querySelector("#loginMessage");
 const itemList = document.querySelector("#itemList");
@@ -233,7 +233,7 @@ async function openStudio() {
   setBusy(true);
   try {
     const authResponse = await request("/api/auth");
-    if (!authResponse.ok) throw new Error("Email or password incorrect.");
+    if (!authResponse.ok) throw new Error("Username or password incorrect.");
     const catalogResponse = await fetch("/api/catalog", { cache: "no-store" });
     if (!catalogResponse.ok) throw new Error("The catalogue is temporarily unavailable.");
     const catalog = await catalogResponse.json();
@@ -275,14 +275,14 @@ loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   loginMessage.textContent = "Checking access...";
   try {
-    const response = await request("/api/auth", { method: "POST", body: JSON.stringify({ email: emailInput.value, password: passwordInput.value }) });
+    const response = await request("/api/auth", { method: "POST", body: JSON.stringify({ username: usernameInput.value, password: passwordInput.value }) });
     const result = await response.json();
-    if (!response.ok) throw new Error(result.error || "Email or password incorrect.");
+    if (!response.ok) throw new Error(result.error || "Username or password incorrect.");
     passwordInput.value = "";
     loginMessage.textContent = "";
     await openStudio();
   } catch {
-    loginMessage.textContent = "Email or password incorrect.";
+    loginMessage.textContent = "Username or password incorrect.";
   }
 });
 
@@ -297,7 +297,7 @@ document.querySelector("#logoutButton").addEventListener("click", async () => {
   studioView.hidden = true;
   loginView.hidden = false;
   loginForm.reset();
-  emailInput.focus();
+  usernameInput.focus();
 });
 
 document.querySelector("#addItemButton").addEventListener("click", () => {

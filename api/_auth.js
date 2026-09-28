@@ -32,28 +32,28 @@ function sign(payload) {
   return crypto.createHmac("sha256", secret).update(payload).digest("base64url");
 }
 
-export function verifyCredentials(email, password) {
-  const allowedEmail = process.env.HGP_ADMIN_EMAIL?.trim().toLowerCase();
+export function verifyCredentials(username, password) {
+  const allowedUsername = process.env.HGP_ADMIN_USERNAME?.trim().toLowerCase();
   const passwordSalt = process.env.HGP_ADMIN_PASSWORD_SALT;
   const passwordHash = process.env.HGP_ADMIN_PASSWORD_HASH;
-  if (!allowedEmail || !passwordSalt || !/^[a-f0-9]{64}$/i.test(passwordHash || "")) return false;
-  if (typeof email !== "string" || typeof password !== "string") return false;
-  if (!secureEqual(email.trim().toLowerCase(), allowedEmail)) return false;
+  if (!allowedUsername || !passwordSalt || !/^[a-f0-9]{64}$/i.test(passwordHash || "")) return false;
+  if (typeof username !== "string" || typeof password !== "string") return false;
+  if (!secureEqual(username.trim().toLowerCase(), allowedUsername)) return false;
 
   const candidateHash = crypto.pbkdf2Sync(password, passwordSalt, ITERATIONS, 32, "sha256").toString("hex");
   return secureEqual(candidateHash, passwordHash.toLowerCase());
 }
 
-export function createSession(email) {
-  const normalizedEmail = email.trim().toLowerCase();
+export function createSession(username) {
+  const normalizedUsername = username.trim().toLowerCase();
   const payload = Buffer.from(JSON.stringify({
-    email: normalizedEmail,
+    username: normalizedUsername,
     exp: Math.floor(Date.now() / 1000) + SESSION_SECONDS,
   })).toString("base64url");
   const signature = sign(payload);
   if (!signature) return null;
   return {
-    email: normalizedEmail,
+    username: normalizedUsername,
     cookie: `${COOKIE_NAME}=${payload}.${signature}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${SESSION_SECONDS}`,
   };
 }
@@ -69,8 +69,8 @@ export function sessionFromRequest(request) {
   if (!payload || !signature || !secureEqual(signature, sign(payload))) return null;
   try {
     const session = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
-    const allowedEmail = process.env.HGP_ADMIN_EMAIL?.trim().toLowerCase();
-    if (!allowedEmail || session.email !== allowedEmail || session.exp <= Math.floor(Date.now() / 1000)) return null;
+    const allowedUsername = process.env.HGP_ADMIN_USERNAME?.trim().toLowerCase();
+    if (!allowedUsername || session.username !== allowedUsername || session.exp <= Math.floor(Date.now() / 1000)) return null;
     return session;
   } catch {
     return null;
