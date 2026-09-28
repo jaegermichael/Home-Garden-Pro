@@ -4,7 +4,7 @@
   "main": "worker/index.js",
   "compatibility_date": "2026-09-28",
   "vars": {
-    "GEMINI_MODEL": "gemini-3.8-flash",
+    "GEMINI_MODEL": "gemini-3.5-flash",
     "CATALOG_URL": "https://home-garden-pro-eight.vercel.app/data/catalog.json",
     "SITE_ORIGIN": "https://home-garden-pro-eight.vercel.app,https://home-garden-pro.vercel.app,http://127.0.0.1:4173,http://localhost:4173,http://127.0.0.1:4174,http://localhost:4174"
   },
