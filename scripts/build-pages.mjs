@@ -38,6 +38,13 @@ const categories = {
     image: "/assets/catalog/troughs-stacked.webp",
     fit: "contain",
   },
+  "indoor-vases": {
+    name: "Indoor vases",
+    short: "Indoor",
+    note: "Sculptural vessels, decorative flowers and finishing pieces for interior spaces.",
+    image: "/assets/products/indoor-vases.jpg",
+    fit: "cover",
+  },
 };
 
 const icons = {
@@ -342,5 +349,16 @@ for (const [relative, content] of files) {
   await mkdir(dirname(destination), { recursive: true });
   await writeFile(destination, content, "utf8");
 }
+
+const sitemapPaths = [
+  "/", "/collection/", ...Object.keys(categories).map((key) => `/collection/${key}/`),
+  "/gallery/", "/about/", "/visit/",
+  ...products.map((product) => `/products/${product.slug || product.id}/`),
+];
+await writeFile(
+  join(root, "sitemap.xml"),
+  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapPaths.map((path) => `  <url><loc>${origin}${path}</loc></url>`).join("\n")}\n</urlset>\n`,
+  "utf8",
+);
 
 console.log(`Built ${files.size} React source pages.`);

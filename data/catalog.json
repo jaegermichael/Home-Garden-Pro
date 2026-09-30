@@ -122,6 +122,126 @@
       "image": "/assets/products/water-feature.jpg", "images": ["/assets/products/water-feature.jpg"],
       "alt": "Circular concrete garden water feature", "sizes": [], "priceFrom": 250, "priceTo": 550,
       "showPrice": true, "visible": true, "archived": false, "featured": true
+    },
+    {
+      "id": "estancia", "slug": "estancia", "name": "Estancia",
+      "category": "indoor-vases", "categoryLabel": "Indoor vase set", "family": "Rounded tapered vessels",
+      "summary": "A coordinated family of softly tapered indoor vases in a speckled stone finish.",
+      "image": "/assets/products/estancia.jpg", "images": ["/assets/products/estancia.jpg"],
+      "alt": "Estancia indoor vase set", "sizes": [], "priceFrom": 40, "priceTo": 150,
+      "showPrice": true, "visible": true, "archived": false, "featured": false
+    },
+    {
+      "id": "nevada-tall", "slug": "nevada-tall", "name": "Nevada Tall",
+      "category": "indoor-vases", "categoryLabel": "Tall indoor vase set", "family": "Angular tapered vessels",
+      "summary": "A pair of tall angular vases with a restrained silhouette and stone-textured finish.",
+      "image": "/assets/products/nevada-tall.jpg", "images": ["/assets/products/nevada-tall.jpg"],
+      "alt": "Nevada Tall angular indoor vase pair", "sizes": [], "priceFrom": 300, "priceTo": 700,
+      "showPrice": true, "visible": true, "archived": false, "featured": false
+    },
+    {
+      "id": "niagra", "slug": "niagra", "name": "Niagra",
+      "category": "indoor-vases", "categoryLabel": "Indoor vase pair", "family": "Curved tapered vessels",
+      "summary": "A sculptural pair of pale curved vases with a tall, clean profile.",
+      "image": "/assets/products/niagra.jpg", "images": ["/assets/products/niagra.jpg"],
+      "alt": "Niagra pale curved indoor vase pair", "sizes": [], "priceFrom": 400, "priceTo": 400,
+      "showPrice": true, "visible": true, "archived": false, "featured": false
+    },
+    {
+      "id": "maluti", "slug": "maluti", "name": "Maluti",
+      "category": "indoor-vases", "categoryLabel": "Tall indoor vase", "family": "Slender organic vessel",
+      "summary": "A tall slender vase with a gently irregular silhouette and a light mineral finish.",
+      "image": "/assets/products/maluti.jpg", "images": ["/assets/products/maluti.jpg"],
+      "alt": "Maluti tall slender indoor vase", "sizes": [], "priceFrom": 300, "priceTo": 600,
+      "showPrice": true, "visible": true, "archived": false, "featured": false
+    },
+    {
+      "id": "geni", "slug": "geni", "name": "Geni",
+      "category": "indoor-vases", "categoryLabel": "Statement indoor vase", "family": "Lidded urn form",
+      "summary": "A generous lidded urn with a softly rounded body and ribbed neck detail.",
+      "image": "/assets/products/geni.jpg", "images": ["/assets/products/geni.jpg"],
+      "alt": "Geni white lidded indoor urn vase", "sizes": [], "priceFrom": 250, "priceTo": 400,
+      "showPrice": true, "visible": true, "archived": false, "featured": false
+    },
+    {
+      "id": "tequila", "slug": "tequila", "name": "Tequila",
+      "category": "indoor-vases", "categoryLabel": "Tall indoor vase", "family": "Narrow tapered vessel",
+      "summary": "A narrow tapered vase with a dark speckled finish and a quietly architectural form.",
+      "image": "/assets/products/tequila.jpg", "images": ["/assets/products/tequila.jpg"],
+      "alt": "Tequila tall dark tapered indoor vase", "sizes": [], "priceFrom": 50, "priceTo": 150,
+      "showPrice": true, "visible": true, "archived": false, "featured": false
+    },
+    {
+      "id": "ridge-planter", "slug": "ridge-planter", "name": "Ridge Planter",
+      "category": "indoor-vases", "categoryLabel": "Textured indoor vase", "family": "Ribbed cylinder",
+      "summary": "A tall cylindrical vase with broad horizontal ridges and a soft neutral finish.",
+      "image": "/assets/products/ridge-planter.jpg", "images": ["/assets/products/ridge-planter.jpg"],
+      "alt": "Ridge Planter tall ribbed indoor vase", "sizes": [], "priceFrom": 150, "priceTo": 200,
+      "showPrice": true, "visible": true, "archived": false, "featured": false
+    },
+    {
+      "id": "crete", "slug": "crete", "name": "Crete",
+      "category": "indoor-vases", "categoryLabel": "Statement indoor vase", "family": "Rounded square vessel",
+      "summary": "A broad dark statement vase with rounded corners and a substantial stone-like presence.",
+      "image": "/assets/products/crete.jpg", "images": ["/assets/products/crete.jpg"],
+      "alt": "Crete dark rounded square indoor vase", "sizes": [], "priceFrom": 450, "priceTo": 450,
+      "showPrice": true, "visible": true, "archived": false, "featured": false
+    },
+    {
+      "id": "delia", "slug": "delia", "name": "Delia",
+      "category": "indoor-vases", "categoryLabel": "Low indoor vase", "family": "Wide rounded bowl",
+      "summary": "A low wide vessel with a softly rounded body and an open planting or display bowl.",
+      "image": "/assets/products/delia.jpg", "images": ["/assets/products/delia.jpg"],
+      "alt": "Delia low rounded indoor vase", "sizes": [], "priceFrom": 60, "priceTo": 250,
+      "showPrice": true, "visible": true, "archived": false, "featured": false
+    },
+    {
+      "id": "hamilton-planter", "slug": "hamilton-planter", "name": "Hamilton Planter",
+      "category": "indoor-vases", "categoryLabel": "Sculptural indoor planter", "family": "Hollow rounded form",
+      "summary": "A compact sculptural planter with a rounded body and distinctive circular opening.",
+      "image": "/assets/products/hamilton-planter.jpg", "images": ["/assets/products/hamilton-planter.jpg"],
+      "alt": "Hamilton sculptural indoor planter", "sizes": [], "priceFrom": 200, "priceTo": 400,
+      "showPrice": true, "visible": true, "archived": false, "featured": false
+    },
+    {
+      "id": "portion-g", "slug": "portion-g", "name": "Portion G",
+      "category": "indoor-vases", "categoryLabel": "Low indoor vase", "family": "Rounded open vessel",
+      "summary": "A low rounded vase with a generous opening and a textured granite-style finish.",
+      "image": "/assets/products/portion-g.jpg", "images": ["/assets/products/portion-g.jpg"],
+      "alt": "Portion G low rounded indoor vase", "sizes": [], "priceFrom": 50, "priceTo": 100,
+      "showPrice": true, "visible": true, "archived": false, "featured": false
+    },
+    {
+      "id": "nevada-set", "slug": "nevada-set", "name": "Nevada Set",
+      "category": "indoor-vases", "categoryLabel": "Indoor vase set", "family": "Soft tapered vessels",
+      "summary": "A family of softly tapered vases in graduated sizes for layered indoor arrangements.",
+      "image": "/assets/products/nevada-set.jpg", "images": ["/assets/products/nevada-set.jpg"],
+      "alt": "Nevada Set graduated indoor vases", "sizes": [], "priceFrom": 100, "priceTo": 400,
+      "showPrice": true, "visible": true, "archived": false, "featured": false
+    },
+    {
+      "id": "indoor-vases", "slug": "indoor-vases", "name": "Indoor Vases",
+      "category": "indoor-vases", "categoryLabel": "Indoor collection", "family": "Curated vase collection",
+      "summary": "A curated selection of indoor vases available to view at the Home & Garden Pro showroom.",
+      "image": "/assets/products/indoor-vases.jpg", "images": ["/assets/products/indoor-vases.jpg"],
+      "alt": "Home and Garden Pro indoor vase showroom", "sizes": [], "priceFrom": 200, "priceTo": 750,
+      "showPrice": true, "visible": true, "archived": false, "featured": false
+    },
+    {
+      "id": "artificial-flowers", "slug": "artificial-flowers", "name": "Artificial Flowers",
+      "category": "indoor-vases", "categoryLabel": "Indoor accessory", "family": "Decorative botanicals",
+      "summary": "Artificial flowers and greenery selected to complement the indoor vase collection.",
+      "image": "/assets/products/artificial-flowers.jpg", "images": ["/assets/products/artificial-flowers.jpg"],
+      "alt": "Artificial flowers displayed with indoor vases", "sizes": [], "priceFrom": 10, "priceTo": 60,
+      "showPrice": true, "visible": true, "archived": false, "featured": false
+    },
+    {
+      "id": "white-pebble-stones", "slug": "white-pebble-stones", "name": "White Pebble Stones",
+      "category": "indoor-vases", "categoryLabel": "Decorative accessory", "family": "Finishing stones",
+      "summary": "White decorative pebble stones for finishing indoor vases, planters and display arrangements.",
+      "image": "/assets/products/white-pebble-stones.jpg", "images": ["/assets/products/white-pebble-stones.jpg"],
+      "alt": "Bags of white decorative pebble stones", "sizes": [], "priceFrom": 13, "priceTo": 13,
+      "showPrice": true, "visible": true, "archived": false, "featured": false
     }
   ]
 }

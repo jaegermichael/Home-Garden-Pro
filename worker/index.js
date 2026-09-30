@@ -14,6 +14,21 @@ const FALLBACK_PRODUCTS = [
   { name: "Protea+", slug: "protea-plus", image: "/assets/products/protea-plus.jpg", summary: "Pair of slender tapered planters.", category: "Tall planter set", prices: [150, 250] },
   { name: "Rum", slug: "rum", image: "/assets/products/rum.jpg", summary: "Softly rounded planter in several sizes.", category: "Rounded planter", prices: [40, 250] },
   { name: "Water Feature", slug: "water-feature", image: "/assets/products/water-feature.jpg", summary: "Circular garden water feature.", category: "Water feature", prices: [250, 550] },
+  { name: "Estancia", slug: "estancia", image: "/assets/products/estancia.jpg", summary: "Set of softly tapered indoor vases.", category: "Indoor vase set", prices: [40, 150] },
+  { name: "Nevada Tall", slug: "nevada-tall", image: "/assets/products/nevada-tall.jpg", summary: "Pair of tall angular indoor vases.", category: "Tall indoor vase set", prices: [300, 700] },
+  { name: "Niagra", slug: "niagra", image: "/assets/products/niagra.jpg", summary: "Pair of pale curved indoor vases.", category: "Indoor vase pair", prices: [400] },
+  { name: "Maluti", slug: "maluti", image: "/assets/products/maluti.jpg", summary: "Tall slender indoor vase.", category: "Tall indoor vase", prices: [300, 600] },
+  { name: "Geni", slug: "geni", image: "/assets/products/geni.jpg", summary: "Large lidded urn with ribbed neck detail.", category: "Statement indoor vase", prices: [250, 400] },
+  { name: "Tequila", slug: "tequila", image: "/assets/products/tequila.jpg", summary: "Narrow tapered indoor vase.", category: "Tall indoor vase", prices: [50, 150] },
+  { name: "Ridge Planter", slug: "ridge-planter", image: "/assets/products/ridge-planter.jpg", summary: "Tall vase with broad horizontal ridges.", category: "Textured indoor vase", prices: [150, 200] },
+  { name: "Crete", slug: "crete", image: "/assets/products/crete.jpg", summary: "Broad dark statement vase.", category: "Statement indoor vase", prices: [450] },
+  { name: "Delia", slug: "delia", image: "/assets/products/delia.jpg", summary: "Low wide rounded indoor vessel.", category: "Low indoor vase", prices: [60, 250] },
+  { name: "Hamilton Planter", slug: "hamilton-planter", image: "/assets/products/hamilton-planter.jpg", summary: "Rounded planter with a circular opening.", category: "Sculptural indoor planter", prices: [200, 400] },
+  { name: "Portion G", slug: "portion-g", image: "/assets/products/portion-g.jpg", summary: "Low rounded granite-finish vase.", category: "Low indoor vase", prices: [50, 100] },
+  { name: "Nevada Set", slug: "nevada-set", image: "/assets/products/nevada-set.jpg", summary: "Graduated set of softly tapered vases.", category: "Indoor vase set", prices: [100, 400] },
+  { name: "Indoor Vases", slug: "indoor-vases", image: "/assets/products/indoor-vases.jpg", summary: "Curated indoor vase collection.", category: "Indoor collection", prices: [200, 750] },
+  { name: "Artificial Flowers", slug: "artificial-flowers", image: "/assets/products/artificial-flowers.jpg", summary: "Decorative flowers and greenery for indoor vases.", category: "Indoor accessory", prices: [10, 60] },
+  { name: "White Pebble Stones", slug: "white-pebble-stones", image: "/assets/products/white-pebble-stones.jpg", summary: "Decorative finishing stones.", category: "Decorative accessory", prices: [13] },
 ];
 
 const BUSINESS_CONTEXT = `Home & Garden Pro makes concrete planters, water features, troughs and sculptural garden forms in Zimbabwe.
