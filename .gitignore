@@ -6,4 +6,5 @@ dist/
 .dev.vars
 .wrangler/
 .react-public/
+work/
 *.local.txt

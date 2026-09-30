@@ -1,10 +1,19 @@
 const FALLBACK_PRODUCTS = [
-  { name: "Indiana Brown", slug: "indiana-brown", image: "/assets/client-indiana.webp", summary: "Tall open-form garden sculpture with a warm, weathered finish." },
-  { name: "Funduzi Granite", slug: "funduzi-granite", image: "/assets/client-funduzi.webp", summary: "Tall tapered concrete vessel in a speckled granite finish." },
-  { name: "Water Feature", slug: "water-feature", image: "/assets/client-water-feature.webp", summary: "Low circular concrete basin designed as a calm garden focal point." },
-  { name: "Curo Trough", slug: "curo-trough", image: "/assets/client-curo.webp", summary: "Linear concrete planter for layered planting and structured edges." },
-  { name: "Round Planters", slug: "round-planters", image: "/assets/client-round-planters.webp", summary: "Low rounded concrete planters with generous planting space." },
-  { name: "Protea", slug: "protea", image: "/assets/client-protea.webp", summary: "Tall planter with a softly rounded base and restrained profile." },
+  { name: "Arizona", slug: "arizona", image: "/assets/products/arizona.jpg", summary: "Low rounded garden vessel with a pebble-like silhouette.", category: "Sculptural planter", prices: [150, 300] },
+  { name: "Bubble Set", slug: "bubble-set", image: "/assets/products/bubble-set.jpg", summary: "Set of rounded planters with organic openings.", category: "Planter set", prices: [600, 900] },
+  { name: "Colorado", slug: "colorado", image: "/assets/products/colorado.jpg", summary: "Large planter with softened corners.", category: "Large planter", prices: [250] },
+  { name: "Egg Pot", slug: "egg-pot", image: "/assets/products/egg-pot.jpg", summary: "Egg-shaped planter with a textured mineral finish.", category: "Rounded planter", prices: [250, 400] },
+  { name: "Garden Sculpture Set", slug: "garden-sculpture-set", image: "/assets/products/garden-sculpture-set.jpg", summary: "Grouping of flowing open garden sculptures.", category: "Sculptural set", prices: [900, 1200] },
+  { name: "Nebraska", slug: "nebraska", image: "/assets/products/nebraska.jpg", summary: "Tall softly tapered planter.", category: "Tall planter", prices: [250, 500] },
+  { name: "Rosa", slug: "rosa", image: "/assets/products/rosa.jpg", summary: "Compact rounded bowl planter.", category: "Low planter", prices: [40, 60] },
+  { name: "Sodwana", slug: "sodwana", image: "/assets/products/sodwana.jpg", summary: "Wide-bellied vessel with a narrow neck.", category: "Statement planter", prices: [250] },
+  { name: "Tennessee", slug: "tennessee", image: "/assets/products/tennessee.jpg", summary: "Clean cylindrical planter in a range of sizes.", category: "Cylinder planter", prices: [60, 250] },
+  { name: "Troughs", slug: "troughs", image: "/assets/products/troughs.jpg", summary: "Rectangular troughs for structured planting.", category: "Garden troughs", prices: [100, 300] },
+  { name: "Baobab Pot", slug: "baobab-pot", image: "/assets/products/baobab-pot.jpg", summary: "Raised bowl planter on a ribbed pedestal.", category: "Pedestal planter", prices: [100, 400] },
+  { name: "Funduzi", slug: "funduzi", image: "/assets/products/funduzi.jpg", summary: "Tall tapered statement planter.", category: "Tall planter", prices: [300, 400] },
+  { name: "Protea+", slug: "protea-plus", image: "/assets/products/protea-plus.jpg", summary: "Pair of slender tapered planters.", category: "Tall planter set", prices: [150, 250] },
+  { name: "Rum", slug: "rum", image: "/assets/products/rum.jpg", summary: "Softly rounded planter in several sizes.", category: "Rounded planter", prices: [40, 250] },
+  { name: "Water Feature", slug: "water-feature", image: "/assets/products/water-feature.jpg", summary: "Circular garden water feature.", category: "Water feature", prices: [250, 550] },
 ];
 
 const BUSINESS_CONTEXT = `Home & Garden Pro makes concrete planters, water features, troughs and sculptural garden forms in Zimbabwe.
@@ -15,6 +24,13 @@ Prices, finishes and availability can change. If the supplied catalogue does not
 
 let cachedCatalogue;
 let catalogueCachedAt = 0;
+
+function fallbackCatalogue() {
+  return {
+    products: FALLBACK_PRODUCTS,
+    text: FALLBACK_PRODUCTS.map((item) => `${item.name} — ${item.category}; ${item.summary} Prices shown: ${item.prices.join("–")}.`).join("\n"),
+  };
+}
 
 function corsHeaders(origin, allowedOrigin) {
   const allowed = String(allowedOrigin || "*").split(",").map((value) => value.trim()).filter(Boolean);
@@ -38,7 +54,7 @@ function json(data, status, headers) {
 
 async function catalogueContext(url) {
   if (cachedCatalogue && Date.now() - catalogueCachedAt < 300_000) return cachedCatalogue;
-  if (!url) return { products: FALLBACK_PRODUCTS, text: FALLBACK_PRODUCTS.map((item) => `${item.name} — ${item.summary} Price is not publicly listed.`).join("\n") };
+  if (!url) return fallbackCatalogue();
   try {
     const response = await fetch(url, { headers: { Accept: "application/json" } });
     if (!response.ok) throw new Error("Catalogue unavailable");
@@ -56,11 +72,11 @@ async function catalogueContext(url) {
       const price = item.prices.length ? ` Prices shown: ${item.prices.join("–")}.` : " Price is not publicly listed.";
       return `${item.name} — ${item.category}; ${item.summary}${price}`;
     }).join("\n");
-    cachedCatalogue = products.length ? { products, text } : { products: FALLBACK_PRODUCTS, text: FALLBACK_PRODUCTS.map((item) => `${item.name} — ${item.summary}`).join("\n") };
+    cachedCatalogue = products.length ? { products, text } : fallbackCatalogue();
     catalogueCachedAt = Date.now();
     return cachedCatalogue;
   } catch {
-    return { products: FALLBACK_PRODUCTS, text: FALLBACK_PRODUCTS.map((item) => `${item.name} — ${item.summary} Price is not publicly listed.`).join("\n") };
+    return fallbackCatalogue();
   }
 }
 

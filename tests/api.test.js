@@ -31,7 +31,7 @@ function loginCookie() {
   return response.headers["Set-Cookie"].split(";")[0];
 }
 
-test("catalogue GET returns normalized price-hidden data without storage", async () => {
+test("catalogue GET returns the current public catalogue without storage", async () => {
   const previousToken = process.env.BLOB_READ_WRITE_TOKEN;
   delete process.env.BLOB_READ_WRITE_TOKEN;
   const response = responseMock();
@@ -42,9 +42,11 @@ test("catalogue GET returns normalized price-hidden data without storage", async
   assert.equal(response.statusCode, 200);
   assert.equal(response.payload.version, 3);
   assert.equal(response.payload.settings.whatsappCatalogUrl, "https://wa.me/c/30404207759615");
-  assert.equal(response.payload.items.length, 6);
-  assert.ok(response.payload.items.every((item) => item.showPrice === false));
-  assert.ok(response.payload.items.every((item) => item.priceFrom === null && item.priceTo === null));
+  assert.equal(response.payload.items.length, 15);
+  assert.ok(response.payload.items.every((item) => item.showPrice === true));
+  const eggPot = response.payload.items.find((item) => item.id === "egg-pot");
+  assert.equal(eggPot.priceFrom, 250);
+  assert.equal(eggPot.priceTo, 400);
 });
 
 test("admin auth rejects incorrect credentials without setting a session", () => {

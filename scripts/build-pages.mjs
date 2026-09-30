@@ -1,10 +1,10 @@
-import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 
 const root = new URL("../", import.meta.url).pathname.replace(/^\/(.:)/, "$1");
 const catalog = JSON.parse(await readFile(join(root, "data/catalog.json"), "utf8"));
 const products = catalog.items.filter((item) => item.visible !== false && item.archived !== true);
-const origin = "https://home-garden-pro.vercel.app";
+const origin = "https://home-garden-pro-eight.vercel.app";
 const whatsapp = "https://wa.me/263772302335";
 const catalogueUrl = catalog.settings?.whatsappCatalogUrl || "https://wa.me/c/30404207759615";
 const mapsUrl = "https://www.google.com/maps/search/?api=1&query=Box+Park%2C+18+Crowhill+Road%2C+Harare%2C+Zimbabwe";
@@ -324,7 +324,7 @@ function productPage(product) {
 const genericProduct = `${head("Piece | Home & Garden Pro", "Explore a Home & Garden Pro garden piece and ask about current finishes and availability.", "/products/")}<body class="product-page">${header("pieces")}<main><section class="dynamic-product" data-dynamic-product><p class="eyebrow">Loading piece</p><h1>Home &amp; Garden Pro</h1></section></main>${footer()}</body></html>`;
 
 const files = new Map([
-  ["index.html", home],
+  ["home.html", home],
   ["collection/index.html", collectionPage()],
   ...Object.keys(categories).map((key) => [`collection/${key}/index.html`, collectionPage(key)]),
   ["gallery/index.html", gallery],
@@ -334,26 +334,13 @@ const files = new Map([
   ...products.map((product) => [`products/${product.slug || product.id}/index.html`, productPage(product)]),
 ]);
 
+const pageRoot = join(root, "legacy-pages");
+await rm(join(pageRoot, "products"), { recursive: true, force: true });
+
 for (const [relative, content] of files) {
-  const destination = join(root, relative);
+  const destination = join(pageRoot, relative);
   await mkdir(dirname(destination), { recursive: true });
   await writeFile(destination, content, "utf8");
 }
 
-console.log(`Built ${files.size} pages.`);
-
-const dist = join(root, "dist");
-await rm(dist, { recursive: true, force: true });
-await mkdir(dist, { recursive: true });
-
-const publish = [
-  "index.html", "404.html", "product.html", "styles.css", "app.js",
-  "robots.txt", "sitemap.xml", "assets", "admin", "data", "collection",
-  "gallery", "about", "visit", "products",
-];
-
-for (const entry of publish) {
-  await cp(join(root, entry), join(dist, entry), { recursive: true });
-}
-
-console.log("Prepared dist for deployment.");
+console.log(`Built ${files.size} React source pages.`);

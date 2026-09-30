@@ -35,11 +35,11 @@ test("chat sends grounded request to Gemini and returns its reply", async () => 
 });
 
 test("chat returns linked product details when Gemini names a catalogue piece", async () => {
-  global.fetch = async () => new Response(JSON.stringify({ candidates: [{ content: { parts: [{ text: "The Protea works well beside an entrance." }] } }] }), { status: 200, headers: { "Content-Type": "application/json" } });
+  global.fetch = async () => new Response(JSON.stringify({ candidates: [{ content: { parts: [{ text: "The Protea+ works well beside an entrance." }] } }] }), { status: 200, headers: { "Content-Type": "application/json" } });
   const request = new Request("https://worker.example/api/chat", { method: "POST", headers: { Origin: "https://example.com", "Content-Type": "application/json" }, body: JSON.stringify({ message: "What suits an entrance?" }) });
   const response = await handleRequest(request, env);
   const data = await response.json();
-  assert.equal(data.products[0].name, "Protea");
-  assert.equal(data.products[0].slug, "protea");
-  assert.match(data.products[0].image, /client-protea/);
+  assert.equal(data.products[0].name, "Protea+");
+  assert.equal(data.products[0].slug, "protea-plus");
+  assert.match(data.products[0].image, /protea-plus/);
 });
