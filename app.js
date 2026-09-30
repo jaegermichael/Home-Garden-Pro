@@ -8,7 +8,7 @@ const categoryLabels = {
 };
 
 let catalogue = [];
-let siteSettings = { whatsappCatalogUrl: "https://wa.me/c/30404207759615" };
+let siteSettings = { whatsappCatalogUrl: "https://wa.me/263772302335" };
 
 const escapeHTML = (value = "") => String(value).replace(/[&<>'"]/g, (character) => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;",

@@ -34,7 +34,7 @@ const FALLBACK_PRODUCTS = [
 const BUSINESS_CONTEXT = `Home & Garden Pro makes concrete planters, water features, troughs and sculptural garden forms in Zimbabwe.
 The display is at Boxpark, 18 Crowhill Road, Helensvale, Harare, Zimbabwe.
 Phone and WhatsApp: +263 77 230 2335.
-The public WhatsApp catalogue is https://wa.me/c/30404207759615.
+The public WhatsApp chat is https://wa.me/263772302335.
 Prices, finishes and availability can change. If the supplied catalogue does not show a price, tell the visitor to ask for the current price; never invent one.`;
 
 let cachedCatalogue;

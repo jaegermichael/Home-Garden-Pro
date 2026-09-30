@@ -41,7 +41,7 @@ test("catalogue GET returns the current public catalogue without storage", async
   if (previousToken) process.env.BLOB_READ_WRITE_TOKEN = previousToken;
   assert.equal(response.statusCode, 200);
   assert.equal(response.payload.version, 3);
-  assert.equal(response.payload.settings.whatsappCatalogUrl, "https://wa.me/c/30404207759615");
+  assert.equal(response.payload.settings.whatsappCatalogUrl, "https://wa.me/263772302335");
   assert.equal(response.payload.items.length, 30);
   assert.ok(response.payload.items.every((item) => item.showPrice === true));
   const eggPot = response.payload.items.find((item) => item.id === "egg-pot");

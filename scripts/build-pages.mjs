@@ -6,7 +6,7 @@ const catalog = JSON.parse(await readFile(join(root, "data/catalog.json"), "utf8
 const products = catalog.items.filter((item) => item.visible !== false && item.archived !== true);
 const origin = "https://home-garden-pro-eight.vercel.app";
 const whatsapp = "https://wa.me/263772302335";
-const catalogueUrl = catalog.settings?.whatsappCatalogUrl || "https://wa.me/c/30404207759615";
+const catalogueUrl = catalog.settings?.whatsappCatalogUrl || "https://wa.me/263772302335";
 const mapsUrl = "https://www.google.com/maps/search/?api=1&query=Box+Park%2C+18+Crowhill+Road%2C+Harare%2C+Zimbabwe";
 
 const categories = {
