@@ -11,7 +11,7 @@ const FALLBACK_PRODUCTS = [
   { name: "Troughs", slug: "troughs", image: "/assets/products/troughs.jpg", summary: "Rectangular troughs for structured planting.", category: "Garden troughs", prices: [100, 300] },
   { name: "Baobab Pot", slug: "baobab-pot", image: "/assets/products/baobab-pot.jpg", summary: "Raised bowl planter on a ribbed pedestal.", category: "Pedestal planter", prices: [100, 400] },
   { name: "Funduzi", slug: "funduzi", image: "/assets/products/funduzi.jpg", summary: "Tall tapered statement planter.", category: "Tall planter", prices: [300, 400] },
-  { name: "Protea+", slug: "protea-plus", image: "/assets/products/protea-plus.jpg", summary: "Pair of slender tapered planters.", category: "Tall planter set", prices: [150, 250] },
+  { name: "Protea", slug: "protea-plus", image: "/assets/products/protea-plus.jpg", summary: "Pair of slender tapered planters.", category: "Tall planter set", prices: [150, 250] },
   { name: "Rum", slug: "rum", image: "/assets/products/rum.jpg", summary: "Softly rounded planter in several sizes.", category: "Rounded planter", prices: [40, 250] },
   { name: "Water Feature", slug: "water-feature", image: "/assets/products/water-feature.jpg", summary: "Circular garden water feature.", category: "Water feature", prices: [250, 550] },
   { name: "Estancia", slug: "estancia", image: "/assets/products/estancia.jpg", summary: "Set of softly tapered indoor vases.", category: "Indoor vase set", prices: [40, 150] },

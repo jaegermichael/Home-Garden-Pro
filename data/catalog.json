@@ -100,7 +100,7 @@
       "showPrice": true, "visible": true, "archived": false, "featured": true
     },
     {
-      "id": "protea-plus", "slug": "protea-plus", "name": "Protea+",
+      "id": "protea-plus", "slug": "protea-plus", "name": "Protea",
       "category": "planters", "categoryLabel": "Tall planter set", "family": "Slender tapered vessels",
       "summary": "A pair of slender tapered planters for entrances, courtyards and narrow spaces.",
       "image": "/assets/products/protea-plus.jpg", "images": ["/assets/products/protea-plus.jpg"],
