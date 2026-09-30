@@ -5,6 +5,7 @@ const categoryLabels = {
   sculptural: "Sculptural",
   "water-features": "Water features",
   troughs: "Troughs",
+  "indoor-vases": "Indoor vases",
 };
 
 let catalogue = [];
