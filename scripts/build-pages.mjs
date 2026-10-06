@@ -4,7 +4,7 @@ import { dirname, join } from "node:path";
 const root = new URL("../", import.meta.url).pathname.replace(/^\/(.:)/, "$1");
 const catalog = JSON.parse(await readFile(join(root, "data/catalog.json"), "utf8"));
 const products = catalog.items.filter((item) => item.visible !== false && item.archived !== true);
-const origin = "https://home-garden-pro-eight.vercel.app";
+const origin = "https://www.homeandgardenpro.co.zw";
 const whatsapp = "https://wa.me/263772302335";
 const catalogueUrl = catalog.settings?.whatsappCatalogUrl || "https://wa.me/263772302335";
 const mapsUrl = "https://www.google.com/maps/search/?api=1&query=Box+Park%2C+18+Crowhill+Road%2C+Harare%2C+Zimbabwe";
@@ -55,6 +55,26 @@ const icons = {
   menu: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>',
 };
 
+const businessSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "HomeAndConstructionBusiness",
+  "@id": `${origin}/#business`,
+  name: "Home & Garden Pro",
+  url: `${origin}/`,
+  image: `${origin}/assets/catalog/hero-storefront.webp`,
+  logo: `${origin}/assets/brand-lockup-transparent.png`,
+  telephone: "+263772302335",
+  priceRange: "$$",
+  currenciesAccepted: "USD",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "18 Crowhill Road, Boxpark, Helensvale",
+    addressLocality: "Harare",
+    addressCountry: "ZW",
+  },
+  hasMap: mapsUrl,
+}).replaceAll("<", "\\u003c");
+
 function head(title, description, path = "/", image = "/assets/catalog/hero-yard.webp", type = "website") {
   return `<!doctype html>
 <html lang="en">
@@ -63,6 +83,7 @@ function head(title, description, path = "/", image = "/assets/catalog/hero-yard
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>${title}</title>
   <meta name="description" content="${description}" />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
   <meta name="theme-color" content="#173f32" />
   <link rel="canonical" href="${origin}${path}" />
   <meta property="og:type" content="${type}" />
@@ -70,7 +91,15 @@ function head(title, description, path = "/", image = "/assets/catalog/hero-yard
   <meta property="og:description" content="${description}" />
   <meta property="og:url" content="${origin}${path}" />
   <meta property="og:image" content="${origin}${image}" />
+  <meta property="og:image:alt" content="Home &amp; Garden Pro collection in Harare" />
+  <meta property="og:site_name" content="Home &amp; Garden Pro" />
+  <meta property="og:locale" content="en_ZW" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="${title}" />
+  <meta name="twitter:description" content="${description}" />
+  <meta name="twitter:image" content="${origin}${image}" />
+  <meta name="geo.region" content="ZW-HA" />
+  <meta name="geo.placename" content="Harare" />
   <link rel="icon" href="/assets/favicon.ico" sizes="any" />
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -78,6 +107,7 @@ function head(title, description, path = "/", image = "/assets/catalog/hero-yard
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 ${path === "/" ? '<link rel="preload" href="/assets/catalog/hero-storefront.webp" as="image" type="image/webp" />' : ""}
   <link rel="stylesheet" href="/styles.css" />
+  <script type="application/ld+json">${businessSchema}</script>
 </head>`;
 }
 
@@ -182,7 +212,7 @@ const spaceOptions = [
   ["interior", "Interior", "/assets/catalog/finish-granite.webp", "Restrained forms and finishes for planted indoor thresholds."],
 ];
 
-const home = `${head("Home & Garden Pro | Sculptural garden pieces made in Zimbabwe", "Planters, water features, troughs and sculptural concrete pieces for gardens and outdoor spaces in Harare.", "/")}
+const home = `${head("Garden Planters & Vases in Harare | Home & Garden Pro", "Shop curated garden planters, indoor vases, water features, troughs and sculptural pieces at Home & Garden Pro in Helensvale, Harare, Zimbabwe.", "/")}
 <body class="home-page">${header()}
 <main>
   <section class="hero" id="top" aria-labelledby="hero-title" data-hero data-nav-section="home" data-section-name="01 / INTRO">
@@ -320,7 +350,41 @@ function productPage(product) {
   const related = products.filter((item) => item.id !== product.id && item.category === product.category);
   const allRelated = (related.length ? related : products.filter((item) => item.id !== product.id)).slice(0, 3);
   const path = `/products/${product.slug || product.id}/`;
-  const structured = JSON.stringify({ "@context": "https://schema.org", "@type": "Product", name: product.name, image: product.images, description: product.summary, brand: { "@type": "Brand", name: "Home & Garden Pro" }, url: `${origin}${path}` }).replaceAll("<", "\\u003c");
+  const range = productRange(product);
+  const structured = JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Product",
+        "@id": `${origin}${path}#product`,
+        name: product.name,
+        sku: product.slug || product.id,
+        image: product.images.map((image) => `${origin}${image}`),
+        description: product.summary,
+        category: categories[product.category]?.name || product.categoryLabel,
+        brand: { "@type": "Brand", name: "Home & Garden Pro" },
+        url: `${origin}${path}`,
+        ...(product.showPrice && range ? {
+          offers: {
+            "@type": "AggregateOffer",
+            url: `${origin}${path}`,
+            priceCurrency: "USD",
+            lowPrice: range.min,
+            highPrice: range.max,
+            offerCount: Math.max(1, (product.sizes || []).filter((size) => validPrice(size.price)).length),
+          },
+        } : {}),
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: `${origin}/` },
+          { "@type": "ListItem", position: 2, name: "Collection", item: `${origin}/collection/` },
+          { "@type": "ListItem", position: 3, name: product.name, item: `${origin}${path}` },
+        ],
+      },
+    ],
+  }).replaceAll("<", "\\u003c");
   const sizes = product.showPrice ? (product.sizes || []).filter((size) => size.label && validPrice(size.price)) : [];
   const initialPrice = sizes.length ? money(sizes[0].price) : priceLabel(product);
   return `${head(`${product.name} | Home & Garden Pro`, `${product.summary} Ask Home & Garden Pro about current finishes and availability.`, path, product.image, "product")}<body class="product-page">${header("pieces")}<main>
@@ -355,9 +419,10 @@ const sitemapPaths = [
   "/gallery/", "/about/", "/visit/",
   ...products.map((product) => `/products/${product.slug || product.id}/`),
 ];
+const lastmod = new Date().toISOString().slice(0, 10);
 await writeFile(
   join(root, "sitemap.xml"),
-  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapPaths.map((path) => `  <url><loc>${origin}${path}</loc></url>`).join("\n")}\n</urlset>\n`,
+  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapPaths.map((path) => `  <url><loc>${origin}${path}</loc><lastmod>${lastmod}</lastmod></url>`).join("\n")}\n</urlset>\n`,
   "utf8",
 );
 

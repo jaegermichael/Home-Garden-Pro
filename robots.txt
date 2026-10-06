@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 
-Sitemap: https://home-garden-pro.vercel.app/sitemap.xml
+Sitemap: https://www.homeandgardenpro.co.zw/sitemap.xml
